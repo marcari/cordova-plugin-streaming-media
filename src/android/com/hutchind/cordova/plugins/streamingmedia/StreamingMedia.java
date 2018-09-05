@@ -26,6 +26,8 @@ public class StreamingMedia extends CordovaPlugin {
 
 	private static final String TAG = "StreamingMediaPlugin";
 
+    private Intent currentStreamIntent = null;
+
 	@Override
 	public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
 		this.callbackContext = callbackContext;
@@ -39,6 +41,9 @@ public class StreamingMedia extends CordovaPlugin {
 
 		if (ACTION_PLAY_AUDIO.equals(action)) {
 			return playAudio(args.getString(0), options);
+		} else if ("currentTime".equals(action)) {
+			callbackContext.success(currentStreamIntent.getStringExtra("currentTime"));
+            return true;
 		} else if (ACTION_PLAY_VIDEO.equals(action)) {
 			return playVideo(args.getString(0), options);
 		} else {
@@ -61,6 +66,7 @@ public class StreamingMedia extends CordovaPlugin {
 		cordova.getActivity().runOnUiThread(new Runnable() {
 			public void run() {
 				final Intent streamIntent = new Intent(cordovaObj.getActivity().getApplicationContext(), activityClass);
+                currentStreamIntent = streamIntent;
 				Bundle extras = new Bundle();
 				extras.putString("mediaUrl", url);
 
@@ -85,6 +91,7 @@ public class StreamingMedia extends CordovaPlugin {
 				}
 
 				cordovaObj.startActivityForResult(plugin, streamIntent, ACTIVITY_CODE_PLAY_MEDIA);
+
 			}
 		});
 		return true;
@@ -95,7 +102,7 @@ public class StreamingMedia extends CordovaPlugin {
 		super.onActivityResult(requestCode, resultCode, intent);
 		if (ACTIVITY_CODE_PLAY_MEDIA == requestCode) {
 			if (Activity.RESULT_OK == resultCode) {
-				this.callbackContext.success();
+				this.callbackContext.success("finish:" + intent.getStringExtra("current"));
 			} else if (Activity.RESULT_CANCELED == resultCode) {
 				String errMsg = "Error";
 				if (intent != null && intent.hasExtra("message")) {

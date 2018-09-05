@@ -140,10 +140,11 @@ MediaPlayer.OnErrorListener, MediaPlayer.OnBufferingUpdateListener {
 		stop();
 	}
 
-	private void wrapItUp(int resultCode, String message) {
+	private void wrapItUp(int resultCode, String message, int position) {
 		Log.d(TAG, "wrapItUp was triggered.");
 		Intent intent = new Intent();
 		intent.putExtra("message", message);
+    	intent.putExtra("current", "" + position);
 		setResult(resultCode, intent);
 		finish();
 	}
@@ -152,7 +153,7 @@ MediaPlayer.OnErrorListener, MediaPlayer.OnBufferingUpdateListener {
 		Log.d(TAG, "onCompletion triggered.");
 		stop();
 		if (mShouldAutoClose) {
-			wrapItUp(RESULT_OK, null);
+			wrapItUp(RESULT_OK, null, -1);
 		}
 	}
 
@@ -178,7 +179,7 @@ MediaPlayer.OnErrorListener, MediaPlayer.OnBufferingUpdateListener {
 		sb.append(extra);
 		Log.e(TAG, sb.toString());
 
-		wrapItUp(RESULT_CANCELED, sb.toString());
+		wrapItUp(RESULT_CANCELED, sb.toString(), -2);
 		return true;
 	}
 
@@ -189,7 +190,7 @@ MediaPlayer.OnErrorListener, MediaPlayer.OnBufferingUpdateListener {
 	@Override
 	public void onBackPressed() {
 		// If we're leaving, let's finish the activity
-		wrapItUp(RESULT_OK, null);
+		wrapItUp(RESULT_OK, null, mMediaPlayer!=null ? mMediaPlayer.getCurrentPosition() : 0);
 	}
 
 	@Override
