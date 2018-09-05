@@ -102,7 +102,7 @@ public class StreamingMedia extends CordovaPlugin {
 		super.onActivityResult(requestCode, resultCode, intent);
 		if (ACTIVITY_CODE_PLAY_MEDIA == requestCode) {
 			if (Activity.RESULT_OK == resultCode) {
-				this.callbackContext.success("finish:" + intent.getStringExtra("current"));
+				this.callbackContext.success(intent.getStringExtra("current"));
 			} else if (Activity.RESULT_CANCELED == resultCode) {
 				String errMsg = "Error";
 				if (intent != null && intent.hasExtra("message")) {

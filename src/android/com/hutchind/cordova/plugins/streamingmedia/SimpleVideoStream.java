@@ -190,7 +190,7 @@ MediaPlayer.OnErrorListener, MediaPlayer.OnBufferingUpdateListener {
 	@Override
 	public void onBackPressed() {
 		// If we're leaving, let's finish the activity
-		wrapItUp(RESULT_OK, null, mMediaPlayer!=null ? mMediaPlayer.getCurrentPosition() : 0);
+		wrapItUp(RESULT_OK, null, mMediaPlayer!=null ? mMediaPlayer.getCurrentPosition()/1000 : 0);
 	}
 
 	@Override
